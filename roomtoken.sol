@@ -4,37 +4,38 @@ import "./ownable.sol";
 import "./safemath.sol";
 import "./tokens.sol";
 
-contract Timeshare is Ownable, ERC721 {
+contract RoomToken is Ownable, ERC721 {
     
-    using SafeMath for uint256;
+    using SafeMath for uint256;    
     
+    event BuyRoom(uint roomId, string date, uint dna);
+
+    mapping (uint => address) public roomsToOwner;
+    mapping (address => uint) ownerRoomsCount;
+    uint256 price = 2500;
+
+    // ERC721
     string public symbol;
     string public  name;
     uint public _totalSupply;
-    uint256 price = 2500;
-
     mapping(address => uint) balances;
     mapping(address => mapping(address => uint)) allowed;
-    
-    struct RoomToken {
-        string date;
-        uint64 roomNumber;
-    }
-
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-    function Timeshare() public {
+    function RoomToken() internal {
         //
         symbol = "RMTOK";
         name = "Room tokens";
         _totalSupply = 23750;
-        balances[0x5A86f0cafD4ef3ba4f0344C138afcC84bd1ED222] = _totalSupply;
-        Transfer(address(0), 0x5A86f0cafD4ef3ba4f0344C138afcC84bd1ED222, _totalSupply);
+        balances[owner] = _totalSupply;
+        Transfer(address(0), owner, _totalSupply);
     }
     
     function ChangePrice(uint256 newPrice) public onlyOwner {
         require(newPrice > 0);
+        //
         price = newPrice;
     }
+    
 }
